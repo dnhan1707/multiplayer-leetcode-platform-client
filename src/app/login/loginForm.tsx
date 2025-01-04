@@ -1,10 +1,14 @@
 "use client"
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "../context/UserContext";
 
 export default function LogInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUserId } = useUser();
+  const router = useRouter();
 
   async function handleLogin(event: React.FormEvent) {
     event.preventDefault();
@@ -27,6 +31,8 @@ export default function LogInForm() {
 
       const data = await response.json();
       console.log(data); // Handle the response data
+      setUserId(data.user.id);
+      router.push('/dashboard');
 
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
