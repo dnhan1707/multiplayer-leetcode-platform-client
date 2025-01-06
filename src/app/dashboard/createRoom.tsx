@@ -29,7 +29,7 @@ export default function CreateRoom() {
       const dataResponse = await response.json();
       console.log(dataResponse);
       setRoomCode(dataResponse.data.room_code);
-      router.push(`/rooms/${dataResponse.data.room_code}`);
+      router.push(`/rooms`);
 
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
