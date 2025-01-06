@@ -23,6 +23,8 @@ export default function LogInForm() {
           email,
           password,
         }),
+        credentials: 'include', // Required to include cookies
+
       });
 
       if (!response.ok) {
@@ -32,6 +34,8 @@ export default function LogInForm() {
       const data = await response.json();
       console.log(data); // Handle the response data
       setUserId(data.user.id);
+
+      // Redirect to the dashboard
       router.push('/dashboard');
 
     } catch (error) {

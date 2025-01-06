@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import CreateSocket from "@/app/utils/socket";
 
 
-export default function Chat() {
+interface ChatProps {
+  roomCode: string;
+}
+
+export default function Chat({ roomCode }: ChatProps) {
     const [message, setMessage] = useState("");
     const [messageRecieved, setMessageRecieved] = useState("");
     const [room, setRoom] = useState("")

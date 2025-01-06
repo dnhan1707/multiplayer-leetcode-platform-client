@@ -6,9 +6,8 @@ import { useRouter } from "next/navigation";
 
 export default function CreateRoom() {
   const router = useRouter();
-  const [roomCode, setRoomCode] = useState("");
   const [roomSize, setRoomSize] = useState(2);
-  const { userId } = useUser();
+  const { userId , setRoomCode} = useUser();
 
   async function handleCreateRoom() {
     try {

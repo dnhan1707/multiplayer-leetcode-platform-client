@@ -5,15 +5,19 @@ import React, { createContext, useContext, useState, ReactNode, Children } from 
 interface UserContextProps {
     userId: string,
     setUserId: (id: string) => void;
+
+    roomCode: string,
+    setRoomCode: (code: string) => void;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider = ({ children } : { children: ReactNode }) => {
     const [userId, setUserId] = useState<string>("");
+    const [roomCode, setRoomCode] = useState<string>("");
 
     return (
-        <UserContext.Provider value={{userId, setUserId}}>
+        <UserContext.Provider value={{userId, setUserId, roomCode, setRoomCode}}>
             {children}
         </UserContext.Provider>
     )
