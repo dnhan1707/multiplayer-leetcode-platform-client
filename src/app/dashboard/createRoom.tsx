@@ -26,9 +26,9 @@ export default function CreateRoom() {
         throw new Error("Something went wrong");
       }
       const dataResponse = await response.json();
-      console.log(dataResponse);
-      setRoomCode(dataResponse.data.room_code);
-      router.push(`/rooms`);
+      const roomCode = dataResponse.data.room_code
+      setRoomCode(roomCode);
+      router.push(`/rooms/${userId}`);
 
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);

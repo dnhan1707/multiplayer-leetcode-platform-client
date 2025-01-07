@@ -2,63 +2,72 @@
 
 import { useEffect, useState } from "react";
 import CreateSocket from "@/app/utils/socket";
-
+import { useUser } from "../context/UserContext";
 
 interface ChatProps {
   roomCode: string;
 }
 
 export default function Chat({ roomCode }: ChatProps) {
-    const [message, setMessage] = useState("");
-    const [messageRecieved, setMessageRecieved] = useState("");
-    const [room, setRoom] = useState("")
-    const socket = CreateSocket();
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<{ userId: string; message: string }[]>([]);
+  const socket = CreateSocket();
+  const { userId } = useUser();
 
-    useEffect(() => {
-        socket.on("recieve_message", (message_from_server) => {
-          setMessageRecieved(message_from_server.message)
-        })
-
-    }, [socket]);
-
-    function joinRoom() {
-      if(room != "") {
-        socket.emit("join_room", room)
-      }
+  useEffect(() => {
+    if (roomCode) {
+      joinRoom();
     }
 
-    function sendMessage() {
-          socket.emit("chatMessage", { message, room });
-          setMessage("");
-    }
+    socket.on("receive_message", (message_from_server) => {
+      console.log("Message received:", message_from_server);
+      setMessages((prevMessages) => [...prevMessages, message_from_server]);
+    });
 
-    return (
+    return () => {
+      socket.off("receive_message");
+      socket.disconnect();
+    };
+  }, [socket, roomCode]);
+
+  function joinRoom() {
+    if (roomCode) {
+      console.log("Joining room:", {userId, roomCode});
+      socket.emit("join_room", {userId, roomCode});
+    }
+  }
+
+  function sendMessage() {
+    if (message.trim()) {
+      console.log("Sending message:", message);
+      socket.emit("chatMessage", { message, roomCode });
+      setMessage("");
+    }
+  }
+
+  return (
+    <div>
+      <div>
+        <p>In room: {roomCode}</p>
+      </div>
+      <div>
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        <button onClick={sendMessage}>Send</button>
+      </div>
+      <div>
+        <h1>Messages:</h1>
         <div>
-          <div>
-              <p>join room:</p>
-              <input
-                type="text"
-                value={room}
-                onChange={(e) =>setRoom(e.target.value)}
-              />
-              <button onClick={joinRoom}>join</button>
-          </div>
-          <div>
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-              <button onClick={sendMessage}>Send</button>
-          </div>
-
-          <div>
-            <h1>Messages:</h1>
-            <div>
-                {messageRecieved}
+          {messages.map((msg, index) => (
+            <div key={index}>
+              <strong>{msg.userId}</strong>: {msg.message}
             </div>
-          </div>
-
+          ))}
         </div>
-    );
+      </div>
+    </div>
+  );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Chat from "@/app/components/Chat";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../../context/UserContext";
 
 const ChatPage = () => {
   const { userId, roomCode  } = useUser();
