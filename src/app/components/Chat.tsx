@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import CreateSocket from "@/app/utils/socket";
-import { useUser } from "../context/UserContext";
+import CreateSocket from "@/app/socket/socket";
+import { SocketService } from "../socket/soketServices";
 
 interface ChatProps {
   roomCode: string;
@@ -12,15 +12,10 @@ export default function Chat({ roomCode }: ChatProps) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<{ userId: string; message: string }[]>([]);
   const socket = CreateSocket();
-  const { userId } = useUser();
+  const socketService = new SocketService(socket);
 
   useEffect(() => {
-    if (roomCode) {
-      joinRoom();
-    }
-
     socket.on("receive_message", (message_from_server) => {
-      console.log("Message received:", message_from_server);
       setMessages((prevMessages) => [...prevMessages, message_from_server]);
     });
 
@@ -30,17 +25,10 @@ export default function Chat({ roomCode }: ChatProps) {
     };
   }, [socket, roomCode]);
 
-  function joinRoom() {
-    if (roomCode) {
-      console.log("Joining room:", {userId, roomCode});
-      socket.emit("join_room", {userId, roomCode});
-    }
-  }
 
   function sendMessage() {
     if (message.trim()) {
-      console.log("Sending message:", message);
-      socket.emit("chatMessage", { message, roomCode });
+      socketService.sendMessage(message, roomCode);
       setMessage("");
     }
   }

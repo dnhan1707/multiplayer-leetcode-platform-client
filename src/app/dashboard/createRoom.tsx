@@ -3,11 +3,15 @@
 import { useState } from "react";
 import { useUser } from "../context/UserContext";
 import { useRouter } from "next/navigation";
+import CreateSocket from "../socket/socket";
+import { SocketService } from "../socket/soketServices";
 
 export default function CreateRoom() {
   const router = useRouter();
   const [roomSize, setRoomSize] = useState(2);
   const { userId , setRoomCode} = useUser();
+  const socket = CreateSocket();
+  const socketService = new SocketService(socket)
 
   async function handleCreateRoom() {
     try {
@@ -27,6 +31,8 @@ export default function CreateRoom() {
       }
       const dataResponse = await response.json();
       const roomCode = dataResponse.data.room_code
+
+      socketService.joinRoom(userId, roomCode);
       setRoomCode(roomCode);
       router.push(`/rooms/${userId}`);
 

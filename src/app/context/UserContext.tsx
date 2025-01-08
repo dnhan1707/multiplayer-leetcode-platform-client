@@ -1,6 +1,7 @@
-"use client"
+"use client";
 
-import React, { createContext, useContext, useState, ReactNode, Children } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { setItem, getItem } from "@/app/utils/localStorage";
 
 interface UserContextProps {
     userId: string,
@@ -13,8 +14,29 @@ interface UserContextProps {
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider = ({ children } : { children: ReactNode }) => {
-    const [userId, setUserId] = useState<string>("");
-    const [roomCode, setRoomCode] = useState<string>("");
+    const [userId, setUserIdState] = useState<string>("");
+    const [roomCode, setRoomCodeState] = useState<string>("");
+
+    useEffect(() => {
+        const storedUserId = getItem("userId");
+        if (storedUserId) {
+            setUserIdState(storedUserId);
+        }
+        const storedRoomCode = getItem("roomCode");
+        if (storedRoomCode) {
+            setRoomCodeState(storedRoomCode);
+        }
+    }, []);
+
+    const setUserId = (id: string) => {
+        setUserIdState(id);
+        setItem("userId", id);
+    };
+
+    const setRoomCode = (code: string) => {
+        setRoomCodeState(code);
+        setItem("roomCode", code);
+    };
 
     return (
         <UserContext.Provider value={{userId, setUserId, roomCode, setRoomCode}}>
