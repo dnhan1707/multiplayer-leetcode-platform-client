@@ -86,15 +86,21 @@ const LandingEditor : React.FC = () => {
         <div>
             <div>
             <Editor
-                height="85vh"
+                height="50vh"
                 defaultLanguage="javascript"
                 theme="vs-dark"
                 onChange={handleEditorChange}
+                options={{
+                    fontSize: 18,
+                    lineHeight: 20, // Optional: Adjust line height
+                    minimap: { enabled: false }, // Optional: Disable minimap to give more space
+                    wordWrap: "on", // Optional: Enable word wrapping
+                }}
             />
             </div>
-            <div>
-                <button className='bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded' onClick={handleCompile} disabled={!usercode}>Compile</button>
-                <button className='bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded' onClick={checkExecution} disabled={!usercode}>Output</button>
+            <div className='bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded'>
+                <button  onClick={handleCompile} disabled={!usercode}>Submit</button>
+                <button  onClick={checkExecution} disabled={!usercode}>Output</button>
 
             </div>
 
