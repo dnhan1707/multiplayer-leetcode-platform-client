@@ -10,6 +10,7 @@ const LandingEditor : React.FC = () => {
 
     const [usercode, setusercode] = useState<string>("")
     const [lang, setlang] = useState(languageOptions[0])
+    const [token, settoken] = useState<string>("")
 
     const apiKey : string = "d443a1c23fmshf52e5b1cfc8de7bp14f22ejsnd602160c8ed4";
 
@@ -21,13 +22,7 @@ const LandingEditor : React.FC = () => {
         //compile logic
     
         try{
-
-            const data = {
-                language_id : lang.id,
-                source_code : btoa(usercode),
-            }
-
-            const response = await fetch(apiKey, { 
+            const response = await fetch("https://judge0-ce.p.rapidapi.com/submissions/", { 
                 method: "POST",
                 headers : {
                     "Content-Type" : "application/json",
@@ -35,22 +30,15 @@ const LandingEditor : React.FC = () => {
                     "x-rapidapi-host" : "judge0-ce.p.rapidapi.com",
                 },
                 body : JSON.stringify({
-                    ...data,
-                    base64_encoded : "true",
-                    fields : "*",
+                    source_code : btoa(usercode),
+                    language_id : lang.id,
                 }),
             });
-
-            if(!response.ok){
-                const error = await response.json();
-                throw new Error(error.message || "Failed to compile");
-            } 
-
-
-            const res : string = await response.json();
-            console.log("res data : ", res)
-
-            const token = res;
+        
+            const res = await response.json();
+            settoken(res.token)
+            
+            console.log(token)
 
         } catch (e) {
             console.error(e)
@@ -58,28 +46,29 @@ const LandingEditor : React.FC = () => {
     }
 
 
-    const checkExecution = async(token : string) => {
+    const checkExecution = async() => {
         try {
-
-
-            const response = await fetch(process.env.REACT_APP_RAPID_API_KEY || "", { 
+            const response = await fetch(`https://judge0-ce.p.rapidapi.com/submissions/${token}`, { 
                 method: "GET",
                 headers : {
                     "Content-Type" : "application/json",
-                    "x-rapidapi-key" : process.env.REACT_APP_RAPID_API_HOST || "",
-                    "x-rapidapi-host" : process.env.REACT_APP_RAPID_API_HOST || "",
+                    "x-rapidapi-key" : "d443a1c23fmshf52e5b1cfc8de7bp14f22ejsnd602160c8ed4",
+                    "x-rapidapi-host" : "judge0-ce.p.rapidapi.com",
                 },
-                body : JSON.stringify({
-                    base64_encoded : "true",
-                    fields : "*",
-                })
             });
 
+            if(response.ok){
+                const output = await response.json();
+                console.log("compiled output object: ", output)
+            } else {
+                console.error("Failed to compiled. Status : ", response.status)
+            }
+
+
         } catch (e) {
-            
+            console.error(e)
         }
        
-
     }
 
     return(
@@ -93,6 +82,8 @@ const LandingEditor : React.FC = () => {
 
             <div>
                 <button className='bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded' onClick={handleCompile} disabled={!usercode}>Compile</button>
+                <button className='bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded' onClick={checkExecution} disabled={!usercode}>Output</button>
+
             </div>
 
 
