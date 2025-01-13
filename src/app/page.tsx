@@ -1,7 +1,7 @@
 "use client"
 import '../styles/globals.css'
 import { useRouter } from "next/navigation";
-import LandingEditor from "./components/LandingEditor"
+import LandingEditor from "./components/Editor/LandingEditor"
 
 export default function Home() {
   const router = useRouter();

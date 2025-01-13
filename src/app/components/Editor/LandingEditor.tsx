@@ -1,7 +1,7 @@
-import React from 'react';
-import { useState } from 'react';
-import { languageOptions } from '../constants/languageOptions';
-import CodeEditor from '../components/CodeEditor';
+import React, { useReducer } from 'react';
+import { useState, useEffect } from 'react';
+import { languageOptions } from '../../constants/languageOptions';
+import Editor from '@monaco-editor/react';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -71,15 +71,27 @@ const LandingEditor : React.FC = () => {
        
     }
 
+
+    useEffect(() => {
+        setusercode(usercode);
+    }, [usercode])
+    
+    const handleEditorChange = (value : string | undefined) => {
+        const updateCode = value || "";
+        setusercode(updateCode);
+        onChange(updateCode)
+    };
+    
     return(
         <div>
             <div>
-                <CodeEditor
-                    onChange={onChange}
-                    code={usercode}                
-                />
+            <Editor
+                height="85vh"
+                defaultLanguage="javascript"
+                theme="vs-dark"
+                onChange={handleEditorChange}
+            />
             </div>
-
             <div>
                 <button className='bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded' onClick={handleCompile} disabled={!usercode}>Compile</button>
                 <button className='bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded' onClick={checkExecution} disabled={!usercode}>Output</button>
