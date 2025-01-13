@@ -1,7 +1,6 @@
 "use client"
 import '../styles/globals.css'
 import { useRouter } from "next/navigation";
-import CodeEditor  from "./components/CodeEditor"
 import LandingEditor from "./components/LandingEditor"
 
 export default function Home() {
@@ -16,13 +15,13 @@ export default function Home() {
   }
   
   return (
-    <div>
+    <div className="space-y-4">
+      <div className = "space-x-4 wt-1">
+        <button className='bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded' onClick={handleLogin}>Login</button>
+        <button className='bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded' onClick={handleSignUp}>Sign Up</button>
+      </div>
 
-      <button className="text-blue" onClick={handleLogin}>Login</button>
-      <button onClick={handleSignUp}>Sign Up</button>
-      
       <LandingEditor/>
-
     </div>
   );
 }
