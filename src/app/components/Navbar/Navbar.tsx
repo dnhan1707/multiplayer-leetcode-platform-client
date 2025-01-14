@@ -1,12 +1,18 @@
 import React from 'react';
-import Link from 'next/link'
+import { useState } from 'react';
 import { useRouter } from "next/navigation";
+import * as dotenv from 'dotenv';
 
-type Props = {};
+dotenv.config();
 
-const Navbar : React.FC<Props> = () => {
+type NavProps = {
+    onRun: () => void;
+    onSubmit : () => void;
+};
+
+const Navbar : React.FC<NavProps> = ({ onRun, onSubmit}) => {
     const router = useRouter();
-
+    
     const handleLogin = () => {
         router.push('/login')
     }
@@ -17,31 +23,21 @@ const Navbar : React.FC<Props> = () => {
 
 
     return(
-        <div className='flex items-center justify-end p-3'>
-			{/* <Link href='/' className='flex items-center justify-center h-20'>
-				<Image src='/logo.png' alt='LeetClone' height={200} width={200} />
-			</Link> */}
-			<div className='flex items-center'>
-				<button
-					className='bg-brand-orange text-white px-2 py-1 sm:px-4 rounded-md text-sm font-medium
-                hover:text-brand-orange hover:bg-white hover:border-2 hover:border-brand-orange border-2 border-transparent
-                transition duration-300 ease-in-out
-                '
-					onClick={handleLogin}
-				>
-					Login
-				</button>
-                <button
-					className='bg-brand-orange text-white px-2 py-1 sm:px-4 rounded-md text-sm font-medium
-                hover:text-brand-orange hover:bg-white hover:border-2 hover:border-brand-orange border-2 border-transparent
-                transition duration-300 ease-in-out
-                '
-					onClick={handleSignUp}
-				>
-					Sign Up
-				</button>
-			</div>
-		</div>
+        <div className="flex items-center justify-between p-4">
+            <div className='flex gap-x-4 justify-center flex-1'>
+                <button className="text-gray-400 border rounded-md border-white px-4 py-2 hover:text-white" onClick={onRun}>
+                    Run
+                </button>
+                <button className="text-gray-400 border rounded-md border-white px-4 py-2 hover:text-white" onClick={onSubmit}>
+                    Submit
+                </button>
+            </div>
+
+            <div className="flex gap-x-4">
+                <button className="text-gray-400 border rounded-md border-white px-4 py-2 hover:text-white">Login</button>
+                <button className="text-gray-400 border rounded-md border-white px-4 py-2 hover:text-white">Signup</button>
+            </div>
+        </div>
 
     )
 }

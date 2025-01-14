@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <div className="space-y-4 bg-black text-white">
-      <Navbar/>
+      {/* <Navbar/> */}
       <Workspace/>
     </div>
   );
