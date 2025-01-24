@@ -18,57 +18,57 @@ const Workspace : React.FC = () => {
         console.log("Updated userCode from child:", codetosubmit);
     }
 
-    const handleCompile = async() : Promise<void> => {
-        //compile logic
+    // const handleCompile = async() : Promise<void> => {
+    //     //compile logic
     
-        try{
+    //     try{
 
-            console.log("code : ", usercode);
-            console.log("here", lang.id)
+    //         console.log("code : ", usercode);
+    //         console.log("here", lang.id)
 
-            const response = await fetch("https://judge0-ce.p.rapidapi.com/submissions/", { 
-                method: "POST",
-                headers : {
-                    "Content-Type" : "application/json",
-                    "x-rapidapi-key" : "d443a1c23fmshf52e5b1cfc8de7bp14f22ejsnd602160c8ed4",
-                    "x-rapidapi-host" : "judge0-ce.p.rapidapi.com",
-                },
-                body : JSON.stringify({
-                    source_code : usercode,
-                    language_id : lang.id,
-                }),
-            });
+    //         const response = await fetch("https://judge0-ce.p.rapidapi.com/submissions/", { 
+    //             method: "POST",
+    //             headers : {
+    //                 "Content-Type" : "application/json",
+    //                 "x-rapidapi-key" : "d443a1c23fmshf52e5b1cfc8de7bp14f22ejsnd602160c8ed4",
+    //                 "x-rapidapi-host" : "judge0-ce.p.rapidapi.com",
+    //             },
+    //             body : JSON.stringify({
+    //                 source_code : usercode,
+    //                 language_id : lang.id,
+    //             }),
+    //         });
             
-            const res = await response.json();
-            settoken(res.token)
+    //         const res = await response.json();
+    //         settoken(res.token)
             
-            console.log("token: " , token)
+    //         console.log("token: " , token)
    
-            const retrieveOutput = await fetch(`https://judge0-ce.p.rapidapi.com/submissions/${res.token}`, { 
-                method: "GET",
-                headers : {
-                    "Content-Type" : "application/json",
-                    "x-rapidapi-key" : "d443a1c23fmshf52e5b1cfc8de7bp14f22ejsnd602160c8ed4",
-                    "x-rapidapi-host" : "judge0-ce.p.rapidapi.com",
-                },
-            });
+    //         const retrieveOutput = await fetch(`https://judge0-ce.p.rapidapi.com/submissions/${res.token}`, { 
+    //             method: "GET",
+    //             headers : {
+    //                 "Content-Type" : "application/json",
+    //                 "x-rapidapi-key" : "d443a1c23fmshf52e5b1cfc8de7bp14f22ejsnd602160c8ed4",
+    //                 "x-rapidapi-host" : "judge0-ce.p.rapidapi.com",
+    //             },
+    //         });
 
-            if(retrieveOutput.ok){
-                const output = await retrieveOutput.json();
-                console.log("compiled output object: ", output)
-            } else {
-                console.error("Failed to compiled. Status : ", retrieveOutput.status)
-            }
+    //         if(retrieveOutput.ok){
+    //             const output = await retrieveOutput.json();
+    //             console.log("compiled output object: ", output)
+    //         } else {
+    //             console.error("Failed to compiled. Status : ", retrieveOutput.status)
+    //         }
             
-        } catch (e) {
-            console.error(e)
-        }
-    }
+    //     } catch (e) {
+    //         console.error(e)
+    //     }
+    // }
 
     return(
         <div className="h-screen flex flex-col bg-dark-fill-3">
 
-            <Navbar onRun={handleCompile} onSubmit={handleCompile}/>
+            {/* <Navbar onRun={handleCompile} onSubmit={handleCompile}/> */}
 
             <Split className='flex flex-grow' minSize={0}>
             
