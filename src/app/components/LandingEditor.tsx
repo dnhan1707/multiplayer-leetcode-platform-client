@@ -2,13 +2,14 @@ import React, { useReducer } from 'react';
 import { useState, useEffect } from 'react';
 import { languageOptions } from '../constants/languageOptions';
 import Editor from '@monaco-editor/react';
+import { useUser } from '../context/UserContext';
 
 type editorProps = {
     onUserCodeChange : (codetosubmit : string) => void; //callback
 };
 
 const LandingEditor : React.FC<editorProps> = ({onUserCodeChange}) => {
-
+    const { submittedCode } = useUser();
     const handleEditorChange = (value : string | undefined) => {
         const updateCode = value || "";
         onUserCodeChange(updateCode) //send update to parent
@@ -22,6 +23,7 @@ const LandingEditor : React.FC<editorProps> = ({onUserCodeChange}) => {
                 defaultLanguage="javascript"
                 theme="vs-dark"
                 onChange={handleEditorChange}
+                value={submittedCode}
                 options={{
                     fontSize: 18,
                     lineHeight: 20, // Optional: Adjust line height

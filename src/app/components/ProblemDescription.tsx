@@ -5,9 +5,7 @@ import { useUser } from "../context/UserContext";
 import DOMPurify from "dompurify";
 
 const ProblemDescription: React.FC = () => {
-    const { selectedProblem } = useUser();
-    const [problemDescription, setProblemDescription] = useState("");
-    const [problemTitle, setProblemTitle] = useState("");
+    const { selectedProblem, setProblemId, setProblemDes, setProblemTitle, problemDes, problemTitle } = useUser();
 
     useEffect(() => {
         const fetchProblemDescription = async () => {
@@ -18,8 +16,9 @@ const ProblemDescription: React.FC = () => {
                         throw new Error("Something wrong with fetching problem");
                     }
                     const result = await response.json();
-                    setProblemDescription(result.problem.description);
-                    setProblemTitle(result.problem.title);
+                    setProblemDes(result.problem.description);
+                    setProblemId(result.problem.problem_id);
+                    setProblemTitle(result.problem.title)
                 }
             } catch (error) {
                 console.error(error);
@@ -29,7 +28,7 @@ const ProblemDescription: React.FC = () => {
         fetchProblemDescription();
     }, [selectedProblem]);
 
-    const sanitizedDescription = DOMPurify.sanitize(problemDescription);
+    const sanitizedDescription = DOMPurify.sanitize(problemDes);
 
     return (
         <div>
