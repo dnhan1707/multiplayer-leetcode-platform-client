@@ -44,11 +44,7 @@ const Workspace : React.FC = () => {
             }
         
             const listOfTokens = await responsedTokens.json(); // This will be a list of token objects
-            // [
-            //     {"token":"d787bc37-d46e-4bf9-85ae-438600997533"},
-            //     {"token":"4d147b68-16ed-4eb7-8f6d-908ec147ba99"},
-            //     {"token":"8c3f3d0c-d163-4665-8c10-4e58affd347c"}
-            // ]
+
         
             // Simple delay before fetching the results
             const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
