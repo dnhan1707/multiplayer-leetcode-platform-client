@@ -16,7 +16,7 @@ const ChatPage = () => {
   return (
     <>
       {gameStarted ? (
-        <div className="space-y-4 bg-black text-white">
+        <div className="bg-black text-white">
           <GameStarted></GameStarted>
         </div>
       ) : (
