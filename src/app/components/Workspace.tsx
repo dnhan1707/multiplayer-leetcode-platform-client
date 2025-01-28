@@ -23,6 +23,7 @@ const Workspace: React.FC = () => {
   const [token, setToken] = useState<string>("");
   const [userCode, setUserCode] = useState<string>("");
   const [lang, setLang] = useState<number>(63); //63 is JS
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("javascript");
   const [compilerResult, setCompilerResult] = useState<CompilerResult | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [testResults, setTestResults] = useState<CompilerResult | null>(null);
@@ -86,12 +87,19 @@ const Workspace: React.FC = () => {
     }
   };
 
+  const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedLangId = Number(event.target.value);
+    setLang(selectedLangId);
+    const selectedLanguage = languageOptions.find(option => option.id === selectedLangId)?.value || "javascript";
+    setSelectedLanguage(selectedLanguage);
+  };
+
   return (
-<div className="h-screen flex flex-col bg-dark-fill-3">
-  {loading ? (
-    <div className="h-full absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-      <div className="text-white text-lg font-bold">Loading...</div>
-    </div>
+    <div className="h-screen flex flex-col bg-dark-fill-3">
+      {loading ? (
+        <div className="h-full absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+          <div className="text-white text-lg font-bold">Loading...</div>
+        </div>
       ) : (
         <>
           <Navbar onRun={handleCompile} onSubmit={handleCompile} />
@@ -117,9 +125,23 @@ const Workspace: React.FC = () => {
               {/** right panel */}
               <div className="flex flex-col p-4 h-full">
                 <div className="flex-grow rounded-md border border-dark-border mb-4 bg-dark-fill-2">
-                  <div className="bg-gray-800 p-2">Code</div>
+                  <div className="bg-gray-800 p-2 flex justify-between items-center">
+                    <span>Code</span>
+                    <select
+                      value={lang}
+                      onChange={handleLanguageChange}
+                      className="bg-dark-fill-2 text-white p-2 rounded-md"
+                      style={{ backgroundColor: '#2d2d2d', color: 'white' }}
+                    >
+                      {languageOptions.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   <div className="text-white p-2 h-full">
-                    <LandingEditor onUserCodeChange={handleUserCodeChange} />
+                    <LandingEditor onUserCodeChange={handleUserCodeChange} language={selectedLanguage} />
                   </div>
                 </div>
 
