@@ -1,11 +1,13 @@
 "use client"
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   async function handleSignUp(event: React.FormEvent) {
     event.preventDefault();
@@ -16,6 +18,7 @@ export default function SignUpForm() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           username,
           email,
@@ -29,7 +32,7 @@ export default function SignUpForm() {
 
       const data = await response.json();
       console.log(data); // Handle the response data
-
+      router.push('/dashboard');
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }

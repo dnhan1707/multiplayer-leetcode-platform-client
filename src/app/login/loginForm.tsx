@@ -7,7 +7,6 @@ import { useUser } from "../context/UserContext";
 export default function LogInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setUserId } = useUser();
   const router = useRouter();
 
   async function handleLogin(event: React.FormEvent) {
@@ -19,12 +18,11 @@ export default function LogInForm() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           email,
           password,
         }),
-        credentials: 'include', // Required to include cookies
-
       });
 
       if (!response.ok) {
@@ -32,8 +30,6 @@ export default function LogInForm() {
       }
 
       const data = await response.json();
-      console.log(data); // Handle the response data
-      setUserId(data.user.id);
 
       // Redirect to the dashboard
       router.push('/dashboard');

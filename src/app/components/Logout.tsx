@@ -6,7 +6,7 @@ import { clearAuthToken } from "../utils/cookiesManager";
 
 export default function Logout() {
     const router = useRouter();
-    const { setUserId, setRoomCode, setGameStarted, setSelectedProblem, setProblemDes, setProblemTitle, setProblemId, setSubmittedCode } = useUser();
+    const { setRoomCode, setGameStarted, setSelectedProblem, setProblemDes, setProblemTitle, setProblemId, setSubmittedCode } = useUser();
 
     async function handleLogout() {
         try {
@@ -26,7 +26,6 @@ export default function Logout() {
             console.log(dataResponse);
 
             // Clear user data from context and local storage
-            setUserId("");
             setRoomCode("");
             setGameStarted(false);
             setSelectedProblem("");
@@ -36,7 +35,6 @@ export default function Logout() {
             setSubmittedCode("")
 
             localStorage.removeItem("authToken");
-            localStorage.removeItem("userId");
             localStorage.removeItem("roomCode");
             localStorage.removeItem("gameStarted");
             localStorage.removeItem("selectedProblem");

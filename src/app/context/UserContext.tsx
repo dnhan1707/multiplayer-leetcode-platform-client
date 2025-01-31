@@ -4,8 +4,6 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 import { setItem, getItem } from "@/app/utils/localStorage";
 
 interface UserContextProps {
-    userId: string,
-    setUserId: (id: string) => void;
 
     roomCode: string,
     setRoomCode: (code: string) => void;
@@ -30,13 +28,18 @@ interface UserContextProps {
 
     languageId: number,
     setLanguageId: (id: number) => void;
+
+    setJwtToken: (token: string) => void;
+    getJwtToken: () => string;
+
+    setJwtRefreshToken: (token: string) => void;   
+    getJwtRefreshToken: () => string;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider = ({ children } : { children: ReactNode }) => {
     const [problemId, setProblemIdState] = useState("");
-    const [userId, setUserIdState] = useState<string>("");
     const [roomCode, setRoomCodeState] = useState<string>("");
     const [selectedProblem, setSelectedProblemState] = useState<string>("");
     const [gameStarted, setGameStartedState] = useState<boolean>(false);
@@ -46,10 +49,6 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
     const [submittedCode, setSubmittedCodeState] = useState<string>("");
 
     useEffect(() => {
-        const storedUserId = getItem("userId");
-        if (storedUserId) {
-            setUserIdState(storedUserId);
-        }
 
         const storedProblemId = getItem("problemId");
         if (storedProblemId) {
@@ -92,10 +91,6 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
         }
     }, []);
 
-    const setUserId = (id: string) => {
-        setUserIdState(id);
-        setItem("userId", id);
-    };
 
     const setProblemId = (id: string) => {
         setProblemIdState(id);
@@ -137,10 +132,25 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
         setItem("selectedProblem", problem);
     };
 
+    const setJwtToken = (token: string) => {
+        sessionStorage.setItem("authToken", token);
+    };  
+
+    const getJwtToken = () => {
+        return sessionStorage.getItem("authToken") || "";
+    }
+
+    const setJwtRefreshToken = (token: string) => {
+        sessionStorage.setItem("refreshToken", token);
+    }
+
+    const getJwtRefreshToken = () => {
+        return sessionStorage.getItem("refreshToken") || "";
+    }
+
     return (
         <UserContext.Provider 
         value={{
-                userId, setUserId, 
                 roomCode, setRoomCode, 
                 gameStarted, setGameStarted, 
                 selectedProblem, setSelectedProblem, 
@@ -148,7 +158,9 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
                 languageId, setLanguageId, 
                 problemDes, setProblemDes, 
                 problemTitle, setProblemTitle, 
-                submittedCode, setSubmittedCode
+                submittedCode, setSubmittedCode,
+                setJwtToken, getJwtToken,
+                setJwtRefreshToken, getJwtRefreshToken
             }}>
             {children}
         </UserContext.Provider>
