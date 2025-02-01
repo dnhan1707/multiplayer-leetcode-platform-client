@@ -8,10 +8,10 @@ type EditorProps = {
 };
 
 const LandingEditor: React.FC<EditorProps> = ({ onUserCodeChange, language = 'javascript' }) => {
-  const { submittedCode } = useUser();
-
+  const { getSubmittedCode } = useUser();
+  const submittedCode = getSubmittedCode();
   const handleEditorChange = (value: string | undefined) => {
-    const updatedCode = value || '';
+    const updatedCode = value || submittedCode;
     onUserCodeChange(updatedCode); // Send updates to parent
   };
 

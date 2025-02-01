@@ -27,18 +27,31 @@ const Workspace: React.FC = () => {
   const [compilerResult, setCompilerResult] = useState<CompilerResult | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [testResults, setTestResults] = useState<CompilerResult | null>(null);
-  const { problemId, setLanguageId, setSubmittedCode } = useUser();
+  const { problemId, setLanguageId, setSubmittedCode, getSubmittedCode } = useUser();
+  const [lastSubmitTime, setLastSubmitTime] = useState<number>(0);
 
   //callback to handle updates from child
   const handleUserCodeChange = (codetosubmit: string) => {
-    console.log(codetosubmit);
+    console.log('User code changed:', codetosubmit); // Add a log to check
     setUserCode(codetosubmit);
-    // setSubmittedCode(codetosubmit);
+    setSubmittedCode(codetosubmit); // Ensure this line is uncommented
   };
+  
 
   const handleCompile = async () => {
+    const now = Date.now();
+    if (now - lastSubmitTime < 8000) { // Prevents submitting within 8 seconds
+      console.warn("Too many submissions! Please wait.");
+      return;
+    }
+    setLastSubmitTime(now);
+
     setLoading(true);
-    setSubmittedCode(userCode);
+    const submittedCode = getSubmittedCode();
+    const codeToSubmit = userCode || submittedCode; // Use submittedCode if userCode is empty
+    console.log('Code to submit:', codeToSubmit); // Log to see what's being submitted
+
+    setSubmittedCode(codeToSubmit);
     setLanguageId(lang);
     try {
       const responsedTokens = await fetch("http://localhost:4000/submission/batch", {
@@ -48,7 +61,7 @@ const Workspace: React.FC = () => {
         },
         credentials: 'include',
         body: JSON.stringify({
-          submittedCode: userCode,
+          submittedCode: codeToSubmit,
           languageId: lang,
           problemId: problemId
         })
