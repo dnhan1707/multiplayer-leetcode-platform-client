@@ -46,6 +46,7 @@ const Workspace: React.FC = () => {
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           submittedCode: userCode,
           languageId: lang,
