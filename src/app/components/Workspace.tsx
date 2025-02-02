@@ -46,6 +46,7 @@ const Workspace: React.FC = () => {
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials :'include',
         body: JSON.stringify({
           submittedCode: userCode,
           languageId: lang,
@@ -63,11 +64,12 @@ const Workspace: React.FC = () => {
       const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
       await delay(5000); // Wait for 5 seconds
 
-      const responsed = await fetch("http://localhost:4000/submission/batch/recieve", {
+      const responsed = await fetch("http://localhost:4000/submission/batch/receive", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           tokenIds: listOfTokens
         })
