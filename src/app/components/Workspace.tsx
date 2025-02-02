@@ -22,6 +22,7 @@ interface CompilerResult {
 const Workspace: React.FC = () => {
   const [token, setToken] = useState<string>("");
   const [userCode, setUserCode] = useState<string>("");
+  const [enableSubmit, setEnableSubmit] = useState<boolean>(true);
   const [lang, setLang] = useState<number>(63); //63 is JS
   const [selectedLanguage, setSelectedLanguage] = useState<string>("javascript");
   const [compilerResult, setCompilerResult] = useState<CompilerResult | null>(null);
@@ -38,68 +39,72 @@ const Workspace: React.FC = () => {
   };
   
 
-  const handleCompile = async () => {
-    const now = Date.now();
-    if (now - lastSubmitTime < 8000) { // Prevents submitting within 8 seconds
-      console.warn("Too many submissions! Please wait.");
-      return;
+const handleCompile = async () => {
+  const now = Date.now();
+  if (now - lastSubmitTime < 16000) { // Prevents submitting within 8 seconds
+    console.warn("Too many submissions! Please wait.");
+    setEnableSubmit(false);
+    return;
+  }
+
+  setLastSubmitTime(now);
+  setLoading(true);
+  setEnableSubmit(false); // Disable buttons
+
+  setTimeout(() => {
+    setLastSubmitTime(0); // Re-enable after 8 seconds
+    console.log("Re-enabling submit button");
+    setEnableSubmit(true);
+    console.log("Ready to submit again");
+
+  }, 16000);
+
+  const submittedCode = getSubmittedCode();
+  const codeToSubmit = userCode || submittedCode; // Use submittedCode if userCode is empty
+
+  try {
+    const responsedTokens = await fetch("http://localhost:4000/submission/batch", {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        submittedCode: codeToSubmit,
+        languageId: lang,
+        problemId: problemId
+      })
+    });
+
+    if (!responsedTokens.ok) {
+      throw new Error('Network response was not ok');
     }
-    setLastSubmitTime(now);
 
-    setLoading(true);
-    const submittedCode = getSubmittedCode();
-    const codeToSubmit = userCode || submittedCode; // Use submittedCode if userCode is empty
-    console.log('Code to submit:', codeToSubmit); // Log to see what's being submitted
+    const listOfTokens = await responsedTokens.json();
 
-    setSubmittedCode(codeToSubmit);
-    setLanguageId(lang);
-    try {
-      const responsedTokens = await fetch("http://localhost:4000/submission/batch", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          submittedCode: codeToSubmit,
-          languageId: lang,
-          problemId: problemId
-        })
-      });
+    // Wait for 5 seconds before fetching results
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
-      if (!responsedTokens.ok) {
-        throw new Error('Network response was not ok');
-      }
+    const responsed = await fetch("http://localhost:4000/submission/batch/recieve", {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ tokenIds: listOfTokens })
+    });
 
-      const listOfTokens = await responsedTokens.json(); // This will be a list of token objects
-
-      // Simple delay before fetching the results
-      const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-      await delay(5000); // Wait for 5 seconds
-
-      const responsed = await fetch("http://localhost:4000/submission/batch/recieve", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          tokenIds: listOfTokens
-        })
-      });
-
-      if (!responsed.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const result: CompilerResult = await responsed.json();
-      setCompilerResult(result);
-      setTestResults(result);
-      console.log(result);
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    } finally {
-      setLoading(false);
+    if (!responsed.ok) {
+      throw new Error('Network response was not ok');
     }
-  };
+
+    const result: CompilerResult = await responsed.json();
+    setCompilerResult(result);
+    setTestResults(result);
+  } catch (error) {
+    console.error('Submission error:', error);
+  } finally {
+    setLoading(false);
+    setEnableSubmit(true); // Enable buttons again
+  }
+};
+
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedLangId = Number(event.target.value);
@@ -116,7 +121,7 @@ const Workspace: React.FC = () => {
         </div>
       ) : (
         <>
-          <Navbar onRun={handleCompile} onSubmit={handleCompile} />
+          <Navbar onRun={handleCompile} onSubmit={handleCompile} enableSubmit={enableSubmit} />
 
           <div className="flex flex-grow flex-col lg:flex-row">
             <Split
