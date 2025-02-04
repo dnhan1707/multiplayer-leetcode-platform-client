@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/app/hooks/useAuth";
 import Chat from "@/app/components/Chat";
 import { useUser } from "../../context/UserContext";
 import Logout from "@/app/components/Logout";
@@ -13,31 +14,11 @@ import "../../styles/workspace.css"
 const ChatPage = () => {
   const { roomCode, gameStarted  } = useUser();
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-      fetch("http://localhost:4000/check", {
-          credentials: "include", // Ensure cookies are sent
-      })
-          .then((res) => {
-              if (!res.ok) {
-                  throw new Error("Unauthorized");
-              }
-              return res.json();
-          })
-          .then((data) => {
-              console.log("Authenticated User:", data.user);
-              setLoading(false);
-          })
-          .catch((error) => {
-              console.error("Auth Check Failed:", error);
-              router.push("/login");
-          });
-  }, []);
-  
+  const { loading, authenticated } = useAuth();
 
   if (loading) return <p>Loading...</p>;
-
+  if (!authenticated) return null;
+  
   return (
     <>
       {gameStarted ? (
