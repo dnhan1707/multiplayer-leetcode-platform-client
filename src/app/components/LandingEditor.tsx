@@ -1,6 +1,7 @@
 import React from 'react';
 import Editor from '@monaco-editor/react';
 import { useUser } from '../context/UserContext';
+import { getBoilerPlate } from '../constants/boilerPlate';
 
 type EditorProps = {
   onUserCodeChange: (codeToSubmit: string) => void; // Callback for parent
@@ -8,10 +9,16 @@ type EditorProps = {
 };
 
 const LandingEditor: React.FC<EditorProps> = ({ onUserCodeChange, language = 'javascript' }) => {
-  const { submittedCode } = useUser();
+  const { getSubmittedCode, problemTitle } = useUser();
+  let submittedCode = getSubmittedCode();
+
+  if(!submittedCode) {
+    const boilerPlate = getBoilerPlate(problemTitle);
+    submittedCode = boilerPlate;
+  }
 
   const handleEditorChange = (value: string | undefined) => {
-    const updatedCode = value || '';
+    const updatedCode = value || submittedCode;
     onUserCodeChange(updatedCode); // Send updates to parent
   };
 

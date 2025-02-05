@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { setItem, getItem } from "@/app/utils/localStorage";
+import { get } from 'http';
 
 interface UserContextProps {
 
@@ -25,6 +26,7 @@ interface UserContextProps {
 
     submittedCode: string,
     setSubmittedCode: (code: string) => void;
+    getSubmittedCode: () => string;
 
     languageId: number,
     setLanguageId: (id: number) => void;
@@ -112,6 +114,10 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
         setItem("submittedCode", code);
     };
 
+    const getSubmittedCode = () => {
+        return getItem("submittedCode") || "";
+    }
+
     const setLanguageId = (id: number) => {
         setLanguageIdState(id);
         setItem("languageId", id);
@@ -151,7 +157,7 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
     return (
         <UserContext.Provider 
         value={{
-                roomCode, setRoomCode, 
+                roomCode, setRoomCode, getSubmittedCode,
                 gameStarted, setGameStarted, 
                 selectedProblem, setSelectedProblem, 
                 problemId, setProblemId, 
