@@ -33,7 +33,7 @@ export const problems = [
         <p>Given an integer array <code>nums</code> and an integer <code>val</code>, remove all occurrences of <code>val</code> in <code>nums</code> <a href=\"https://en.wikipedia.org/wiki/In-place_algorithm\" target=\"_blank\"><strong>in-place</strong></a>. 
         // The order of the elements may be changed. Then return <em>the number of elements in </em><code>nums</code><em> which are not equal to </em><code>val</code>.</p>
         `,
-        examples    : [
+        examples: [
             {
                 input: "nums = [3,2,2,3], val = 3",
                 output: "2, nums = [2,2,_,_]",
@@ -54,6 +54,30 @@ export const problems = [
             "0 <= nums.length <= 100",
             "0 <= nums[i] <= 50",
             "0 <= val <= 100"
+        ]
+    }, 
+    {
+        id: 3,
+        title: "Contain Duplicate",
+        description: "<p>Given an integer array <code>nums</code>, return <code><span>true</span></code> if any value appears <strong>more than once</strong> in the array, otherwise return <code><span>false</span></code>.</p>",
+
+        examples: [
+            {
+                input: "nums = [1, 2, 3, 3]",
+                output: "true",
+                explaination: 
+                    `Because there are two number 3`
+            },
+            {
+                input: "nums = [1, 2, 3, 4]",
+                output: "false",
+                explaination: 
+                    `Because all numbers are unique`
+            }
+        ],
+        constraint: [
+            "1 <= nums.length <= 10^5",
+            "-10^9 <= nums[i] <= 10^9",
         ]
     }
     // Add more problems as needed

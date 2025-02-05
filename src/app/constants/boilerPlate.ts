@@ -6,6 +6,8 @@ export const getBoilerPlate = (title: string) => {
             return boilerPlate.twoSum;
         case "Remove Element":
             return boilerPlate.removeElement;
+        case "Contain Duplicate":
+            return boilerPlate.containDuplicate;
         default:
             return "";
     }
@@ -17,6 +19,9 @@ export const boilerPlate = {
     // your code here
 }`,
     removeElement: `function removeElement(nums, val) {
+    // your code here
+}`,
+    containDuplicate: `function containDuplicate(nums) {
     // your code here
 }`
 }       
