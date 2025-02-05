@@ -11,6 +11,7 @@ type EditorProps = {
 const LandingEditor: React.FC<EditorProps> = ({ onUserCodeChange, language = 'javascript' }) => {
   const { getSubmittedCode, problemTitle } = useUser();
   let submittedCode = getSubmittedCode();
+  console.log("sumittedf code here:", submittedCode);
 
   if(!submittedCode) {
     const boilerPlate = getBoilerPlate(problemTitle);
