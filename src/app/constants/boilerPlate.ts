@@ -4,6 +4,8 @@ export const getBoilerPlate = (title: string) => {
     switch (title) {
         case "Two Sum":
             return boilerPlate.twoSum;
+        case "Remove Element":
+            return boilerPlate.removeElement;
         default:
             return "";
     }
@@ -12,6 +14,9 @@ export const getBoilerPlate = (title: string) => {
 
 export const boilerPlate = {
     twoSum: `function twoSum(nums, target) {
-                // your code here
+    // your code here
 }`,
+    removeElement: `function removeElement(nums, val) {
+    // your code here
+}`
 }       
