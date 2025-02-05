@@ -78,7 +78,7 @@ const Workspace: React.FC = () => {
       // Wait for 5 seconds before fetching results
       await new Promise(resolve => setTimeout(resolve, 5000));
 
-      const responsed = await fetch("http://localhost:4000/submission/batch/receive", {
+      const responsed = await fetch("http://localhost:4000/submission/batch/recieve", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
