@@ -6,6 +6,7 @@ import Navbar from './Navbar';
 import { languageOptions } from '../constants/languageOptions';
 import { useUser } from '../context/UserContext';
 import Testcases from './Testcases';
+import { list } from 'postcss';
 
 interface WrongAnswer {
   case: string;
@@ -58,27 +59,28 @@ const Workspace: React.FC = () => {
     const codeToSubmit = userCode || submittedCode; // Use submittedCode if userCode is empty
 
     try {
-      const responsedTokens = await fetch("http://localhost:4000/submission/batch", {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          submittedCode: codeToSubmit,
-          languageId: lang,
-          problemId: problemId
-        })
-      });
-
+        const responsedTokens = await fetch("http://localhost:4000/submission/batch", {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            submittedCode: codeToSubmit,
+            languageId: lang,
+            problemId: problemId
+          })
+        });
+        
       if (!responsedTokens.ok) {
         throw new Error('Network response was not ok');
       }
 
       const listOfTokens = await responsedTokens.json();
-
+      console.log("after responsedTokens", listOfTokens)
+      
       // Wait for 5 seconds before fetching results
       await new Promise(resolve => setTimeout(resolve, 5000));
 
-      const responsed = await fetch("http://localhost:4000/submission/batch/recieve", {
+      const responsed = await fetch("http://localhost:4000/submission/batch/receive", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -98,6 +100,7 @@ const Workspace: React.FC = () => {
       setLoading(false);
       setEnableSubmit(true); // Enable buttons again
     }
+
   };
 
   // Function to handle language change

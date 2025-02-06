@@ -17,6 +17,9 @@ const Testcases: React.FC<TestcasesProp> = ({ testResults }) => {
   const [testcasesArray, setTestcaseArray] = useState<any[]>([]);
   const [status, setStatus] = useState<number>(3);
 
+
+  console.log("TESTCASES PRINT WHERE \n", testResults)
+
   useEffect(() => {
     if (testResults === null) {
       setStatus(3);

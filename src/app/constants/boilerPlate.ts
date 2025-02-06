@@ -33,7 +33,10 @@ export const boilerPlate = {
 }`,
         python: `def two_sum(nums, target):
     # your code here
-    pass`
+    pass`,
+        cplusplus: `vector<int> twoSum(vector<int>& nums, int target) {
+            /* your code here*/
+        }`
     },
     removeElement: {
         javascript: `function removeElement(nums, val) {

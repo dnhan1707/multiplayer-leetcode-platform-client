@@ -6,7 +6,7 @@ export const languageOptions = [
       value: "javascript",
     },
     {
-      id:76,
+      id:54,
       name:"C++ (Clang 7.0.1)",
       value: "c++"
     }, 
@@ -16,7 +16,7 @@ export const languageOptions = [
       value: "java"
     }, 
     {
-      id:100,
+      id:71,
       name:"Python (3.12.5)",
       value: "python"
     }
