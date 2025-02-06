@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useUser } from "../context/UserContext";
 
 export default function ProblemOptions() {
-    const [options, setOptions] = useState(["Random", "Two Sum", "Remove Element"]);
+    const [options, setOptions] = useState(["Random", "Two Sum", "Remove Element", "Contain Duplicate", "Valid Anagram", "Group Anagram"]);
     const [selectedOption, setSelectedOption] = useState<string>("");
     const { setGameStarted, setSelectedProblem } = useUser();
 

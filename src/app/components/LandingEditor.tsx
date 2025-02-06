@@ -11,10 +11,10 @@ type EditorProps = {
 const LandingEditor: React.FC<EditorProps> = ({ onUserCodeChange, language = 'javascript' }) => {
   const { getSubmittedCode, problemTitle } = useUser();
   let submittedCode = getSubmittedCode();
-  console.log("sumittedf code here:", submittedCode);
 
   if(!submittedCode) {
-    const boilerPlate = getBoilerPlate(problemTitle);
+    console.log("getting boiler plate")
+    const boilerPlate = getBoilerPlate(problemTitle, language);
     submittedCode = boilerPlate;
   }
 
@@ -28,15 +28,15 @@ const LandingEditor: React.FC<EditorProps> = ({ onUserCodeChange, language = 'ja
       <Editor
         key={language} // Force re-render when language changes
         height="50vh"
-        defaultLanguage={language}
+        language={language}  // Use language here, not defaultLanguage
         theme="vs-dark"
         onChange={handleEditorChange}
         value={submittedCode}
         options={{
           fontSize: 18,
-          lineHeight: 20, // Optional: Adjust line height
-          minimap: { enabled: false }, // Disable minimap
-          wordWrap: 'on', // Enable word wrapping
+          lineHeight: 20,
+          minimap: { enabled: false },
+          wordWrap: 'on',
         }}
       />
     </div>

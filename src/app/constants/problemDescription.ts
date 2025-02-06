@@ -33,7 +33,7 @@ export const problems = [
         <p>Given an integer array <code>nums</code> and an integer <code>val</code>, remove all occurrences of <code>val</code> in <code>nums</code> <a href=\"https://en.wikipedia.org/wiki/In-place_algorithm\" target=\"_blank\"><strong>in-place</strong></a>. 
         // The order of the elements may be changed. Then return <em>the number of elements in </em><code>nums</code><em> which are not equal to </em><code>val</code>.</p>
         `,
-        examples    : [
+        examples: [
             {
                 input: "nums = [3,2,2,3], val = 3",
                 output: "2, nums = [2,2,_,_]",
@@ -54,6 +54,87 @@ export const problems = [
             "0 <= nums.length <= 100",
             "0 <= nums[i] <= 50",
             "0 <= val <= 100"
+        ]
+    }, 
+    {
+        id: 3,
+        title: "Contain Duplicate",
+        description: "<p>Given an integer array <code>nums</code>, return <code><span>true</span></code> if any value appears <strong>more than once</strong> in the array, otherwise return <code><span>false</span></code>.</p>",
+
+        examples: [
+            {
+                input: "nums = [1, 2, 3, 3]",
+                output: "true",
+                explaination: 
+                    `Because there are two number 3`
+            },
+            {
+                input: "nums = [1, 2, 3, 4]",
+                output: "false",
+                explaination: 
+                    `Because all numbers are unique`
+            }
+        ],
+        constraint: [
+            "1 <= nums.length <= 10^5",
+            "-10^9 <= nums[i] <= 10^9",
+        ]
+    }, 
+    {
+        id: 4,
+        title: "Valid Anagram",
+        description: "<p>Given two strings <code>s</code> and <code>t</code>, return <code>true</code> if <code>t</code> is an <span><div><div><div><div>anagram</div></div><div></div></div></div></span> of <code>s</code>, and <code>false</code> otherwise.</p>",
+
+        examples: [
+            {
+                input: `s = "anagram", t = "nagaram"`,
+                output: "true",
+                explaination: 
+                    `Because reverse of t is s`
+            },
+            {
+                input: `s = "cat", t = "tar"`,
+                output: "false",
+                explaination: 
+                    `Because reverse of t is NOT s`
+            }
+        ],
+        constraint: [
+            "1 <= s.length, t.length <= 5 * 10^4",
+            "s and t consist of lowercase English letters",
+        ]
+    },
+    {
+        id: 5,
+        title: "Group Anagrams",
+        description: `
+          <p>Given an array of strings <code>strs</code>, group the <strong>anagrams</strong> together. You can return the answer in any order.</p>
+        `,
+        examples: [
+          {
+            input: 'strs = ["eat","tea","tan","ate","nat","bat"]',
+            output: '[["bat"],["nat","tan"],["ate","eat","tea"]]',
+            explaination: `
+              There is no string in strs that can be rearranged to form "bat".
+              The strings "nat" and "tan" are anagrams as they can be rearranged to form each other.
+              The strings "ate", "eat", and "tea" are anagrams as they can be rearranged to form each other.
+            `
+          },
+          {
+            input: 'strs = [""]',
+            output: '[[""]]',
+            explaination: 'The only string is an empty string, so it forms a group by itself.'
+          },
+          {
+            input: 'strs = ["a"]',
+            output: '[["a"]]',
+            explaination: 'The only string "a" forms a group by itself.'
+          }
+        ],
+        constraint: [
+          "1 <= strs.length <= 10^4",
+          "0 <= strs[i].length <= 100",
+          "strs[i] consists of lowercase English letters"
         ]
     }
     // Add more problems as needed
