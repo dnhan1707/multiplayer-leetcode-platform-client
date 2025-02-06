@@ -104,9 +104,11 @@ const Workspace: React.FC = () => {
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedLangId = Number(event.target.value);
     setLang(selectedLangId);
-    const selectedLanguage = languageOptions.find(option => option.id === selectedLangId)?.value || "javascript";
-    setSelectedLanguage(selectedLanguage);
+    const selectedLang = languageOptions.find(option => option.id === selectedLangId)?.value || "javascript";
+    setSelectedLanguage(selectedLang);  // Ensure selectedLanguage is updated
+    setSubmittedCode("")
   };
+  
 
   return (
     <div className="h-screen flex flex-col bg-dark-fill-3">
