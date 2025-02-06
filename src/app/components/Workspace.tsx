@@ -60,10 +60,8 @@ const Workspace: React.FC = () => {
     try {
       const responseTokens = await fetch("http://localhost:4000/submission/batch", {
         method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials :'include',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           submittedCode: codeToSubmit,
           languageId: lang,
@@ -80,22 +78,18 @@ const Workspace: React.FC = () => {
       // Wait for 5 seconds before fetching results
       await new Promise(resolve => setTimeout(resolve, 5000));
 
-      const responsed = await fetch("http://localhost:4000/submission/batch/recieve", {
+      const response = await fetch("http://localhost:4000/submission/batch/receive", {
         method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({
-          tokenIds: listOfTokens
-        })
+        body: JSON.stringify({ tokenIds: listOfTokens })
       });
 
-      if (!responsed.ok) {
+      if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
-      const result: CompilerResult = await responsed.json();
+      const result: CompilerResult = await response.json();
       setCompilerResult(result);
       setTestResults(result);
     } catch (error) {
