@@ -79,6 +79,63 @@ export const problems = [
             "1 <= nums.length <= 10^5",
             "-10^9 <= nums[i] <= 10^9",
         ]
+    }, 
+    {
+        id: 4,
+        title: "Valid Anagram",
+        description: "<p>Given two strings <code>s</code> and <code>t</code>, return <code>true</code> if <code>t</code> is an <span><div><div><div><div>anagram</div></div><div></div></div></div></span> of <code>s</code>, and <code>false</code> otherwise.</p>",
+
+        examples: [
+            {
+                input: `s = "anagram", t = "nagaram"`,
+                output: "true",
+                explaination: 
+                    `Because reverse of t is s`
+            },
+            {
+                input: `s = "cat", t = "tar"`,
+                output: "false",
+                explaination: 
+                    `Because reverse of t is NOT s`
+            }
+        ],
+        constraint: [
+            "1 <= s.length, t.length <= 5 * 10^4",
+            "s and t consist of lowercase English letters",
+        ]
+    },
+    {
+        id: 5,
+        title: "Group Anagrams",
+        description: `
+          <p>Given an array of strings <code>strs</code>, group the <strong>anagrams</strong> together. You can return the answer in any order.</p>
+        `,
+        examples: [
+          {
+            input: 'strs = ["eat","tea","tan","ate","nat","bat"]',
+            output: '[["bat"],["nat","tan"],["ate","eat","tea"]]',
+            explaination: `
+              There is no string in strs that can be rearranged to form "bat".
+              The strings "nat" and "tan" are anagrams as they can be rearranged to form each other.
+              The strings "ate", "eat", and "tea" are anagrams as they can be rearranged to form each other.
+            `
+          },
+          {
+            input: 'strs = [""]',
+            output: '[[""]]',
+            explaination: 'The only string is an empty string, so it forms a group by itself.'
+          },
+          {
+            input: 'strs = ["a"]',
+            output: '[["a"]]',
+            explaination: 'The only string "a" forms a group by itself.'
+          }
+        ],
+        constraint: [
+          "1 <= strs.length <= 10^4",
+          "0 <= strs[i].length <= 100",
+          "strs[i] consists of lowercase English letters"
+        ]
     }
     // Add more problems as needed
 ];

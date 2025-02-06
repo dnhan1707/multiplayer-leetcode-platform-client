@@ -8,6 +8,10 @@ export const getBoilerPlate = (title: string) => {
             return boilerPlate.removeElement;
         case "Contain Duplicate":
             return boilerPlate.containDuplicate;
+        case "Valid Anagram":
+            return boilerPlate.validAnagram;
+        case "Group Anagram":
+            return boilerPlate.groupAnagram;
         default:
             return "";
     }
@@ -23,5 +27,11 @@ export const boilerPlate = {
 }`,
     containDuplicate: `function containDuplicate(nums) {
     // your code here
-}`
+}`,
+    validAnagram: `function validAnagram(s, t) {
+    // your code here
+}`,
+    groupAnagram: `function groupAnagram(strs) {
+    // your code here
+}`,
 }       
