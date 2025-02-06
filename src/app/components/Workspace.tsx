@@ -87,11 +87,11 @@ const Workspace: React.FC = () => {
         body: JSON.stringify({ tokenIds: listOfTokens })
       });
 
-      if (!response.ok) {
+      if (!responsed.ok) {
         throw new Error('Network response was not ok');
       }
 
-      const result: CompilerResult = await response.json();
+      const result: CompilerResult = await responsed.json();
       setCompilerResult(result);
       setTestResults(result);
     } catch (error) {
