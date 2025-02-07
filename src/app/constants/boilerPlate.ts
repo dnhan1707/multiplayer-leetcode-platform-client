@@ -31,7 +31,7 @@ export const boilerPlate = {
         javascript: `function twoSum(nums, target) {
     // your code here
 }`,
-        python: `def two_sum(nums, target):
+        python: `def twoSum(nums, target):
     # your code here
     pass`
     },
@@ -39,7 +39,7 @@ export const boilerPlate = {
         javascript: `function removeElement(nums, val) {
     // your code here
 }`,
-        python: `def remove_element(nums, val):
+        python: `def removeElement(nums, val):
     # your code here
     pass`
     },
@@ -47,7 +47,7 @@ export const boilerPlate = {
         javascript: `function containDuplicate(nums) {
     // your code here
 }`,
-        python: `def contain_duplicate(nums):
+        python: `def containDuplicate(nums):
     # your code here
     pass`
     },
@@ -55,7 +55,7 @@ export const boilerPlate = {
         javascript: `function validAnagram(s, t) {
     // your code here
 }`,
-        python: `def valid_anagram(s, t):
+        python: `def validAnagram(s, t):
     # your code here
     pass`
     },
@@ -63,7 +63,7 @@ export const boilerPlate = {
         javascript: `function groupAnagram(strs) {
     // your code here
 }`,
-        python: `def group_anagram(strs):
+        python: `def groupAnagram(strs):
     # your code here
     pass`
     },
