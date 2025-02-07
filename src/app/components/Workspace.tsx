@@ -30,9 +30,9 @@ const Workspace: React.FC = () => {
   const [lastSubmitTime, setLastSubmitTime] = useState<number>(0);
 
   // Callback to handle updates from child
-  const handleUserCodeChange = (codetosubmit: string) => {
-    setUserCode(codetosubmit);
-    setSubmittedCode(codetosubmit);
+  const handleUserCodeChange = (codeToSubmit: string) => {
+    setUserCode(codeToSubmit);
+    setSubmittedCode(codeToSubmit);
   };
 
   // Function to handle code compilation and submission
@@ -58,7 +58,7 @@ const Workspace: React.FC = () => {
     const codeToSubmit = userCode || submittedCode; // Use submittedCode if userCode is empty
 
     try {
-      const responsedTokens = await fetch("http://localhost:4000/submission/batch", {
+      const responseTokens = await fetch("http://localhost:4000/submission/batch", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -69,27 +69,27 @@ const Workspace: React.FC = () => {
         })
       });
 
-      if (!responsedTokens.ok) {
+      if (!responseTokens.ok) {
         throw new Error('Network response was not ok');
       }
 
-      const listOfTokens = await responsedTokens.json();
+      const listOfTokens = await responseTokens.json();
 
       // Wait for 5 seconds before fetching results
       await new Promise(resolve => setTimeout(resolve, 5000));
 
-      const responsed = await fetch("http://localhost:4000/submission/batch/recieve", {
+      const response = await fetch("http://localhost:4000/submission/batch/receive", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ tokenIds: listOfTokens })
       });
 
-      if (!responsed.ok) {
+      if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
-      const result: CompilerResult = await responsed.json();
+      const result: CompilerResult = await response.json();
       setCompilerResult(result);
       setTestResults(result);
     } catch (error) {
@@ -103,9 +103,10 @@ const Workspace: React.FC = () => {
   // Function to handle language change
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedLangId = Number(event.target.value);
+    const selectedLang = languageOptions.find(option => option.id === selectedLangId)?.value || "javascript";
     setLang(selectedLangId);
-    const selectedLanguage = languageOptions.find(option => option.id === selectedLangId)?.value || "javascript";
-    setSelectedLanguage(selectedLanguage);
+    setSelectedLanguage(selectedLang);  // Ensure selectedLanguage is updated
+    setSubmittedCode("");
   };
 
   return (
