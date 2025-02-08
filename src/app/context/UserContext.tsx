@@ -36,6 +36,9 @@ interface UserContextProps {
 
     setJwtRefreshToken: (token: string) => void;   
     getJwtRefreshToken: () => string;
+
+    userName: string;
+    setUserName: (name: string) => void;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
@@ -49,8 +52,13 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
     const [problemTitle, setProblemTitleState] = useState<string>("");
     const [languageId, setLanguageIdState] = useState<number>(63);
     const [submittedCode, setSubmittedCodeState] = useState<string>("");
+    const [userName, setUserNameState] = useState<string>("");
 
     useEffect(() => {
+        const storeUserName = getItem("userName");
+        if(storeUserName){
+            setUserNameState(storeUserName);
+        }
 
         const storedProblemId = getItem("problemId");
         if (storedProblemId) {
@@ -93,6 +101,10 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
         }
     }, []);
 
+    const setUserName = (name: string) => {
+        setUserNameState(name);
+        setItem("userName", name);
+    }
 
     const setProblemId = (id: string) => {
         setProblemIdState(id);
@@ -166,7 +178,8 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
                 problemTitle, setProblemTitle, 
                 submittedCode, setSubmittedCode,
                 setJwtToken, getJwtToken,
-                setJwtRefreshToken, getJwtRefreshToken
+                setJwtRefreshToken, getJwtRefreshToken,
+                userName, setUserName
             }}>
             {children}
         </UserContext.Provider>
