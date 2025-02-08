@@ -7,6 +7,7 @@ import { useUser } from "../context/UserContext";
 export default function LogInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUserName } = useUser();
   const router = useRouter();
 
   async function handleLogin(event: React.FormEvent) {
@@ -30,7 +31,8 @@ export default function LogInForm() {
       }
 
       const data = await response.json();
-
+      console.log(data);
+      setUserName(data.user.username);
       // Redirect to the dashboard
       router.push('/dashboard');
 
