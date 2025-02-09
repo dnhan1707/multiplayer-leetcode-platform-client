@@ -33,9 +33,25 @@ export default function JoinRoom() {
 
   if (loading) return <p>Loading...</p>;
 
-  function handleJoinRoom() {
-    setRoomCode(roomId);
-    router.push(`/rooms/${roomId}`);
+  async function handleJoinRoom() {
+    try {
+      const response = await fetch(`http://localhost:4000/rooms/${roomId}`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        credentials: 'include'
+      })
+
+      if(!response.ok) {
+        throw new Error("Invalid room code received from the server");
+      }
+      const dataResponse = await response.json();
+      console.log(dataResponse);
+      setRoomCode(roomId);
+      router.push(`/rooms/${roomId}`);
+    } catch (error) {
+      
+    }
+
   }
 
   return (
