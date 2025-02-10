@@ -54,8 +54,8 @@ export default function CreateRoom() {
       }
 
       const dataResponse = await response.json();
-      const roomCode = dataResponse?.data?.room_code;
-
+      const roomCode = dataResponse?.data?.newRoom.room_code;
+      console.log(dataResponse);
       if (!roomCode) {
         throw new Error("Invalid room code received from the server");
       }
