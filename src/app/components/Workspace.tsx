@@ -6,17 +6,7 @@ import Navbar from './Navbar';
 import { languageOptions } from '../constants/languageOptions';
 import { useUser } from '../context/UserContext';
 import Testcases from './Testcases';
-
-interface WrongAnswer {
-  case: string;
-  expected: string;
-  received: string;
-}
-
-interface CompilerResult {
-  success: boolean;
-  wrong_answer?: WrongAnswer[];
-}
+import { CompilerResult } from '../types/types';
 
 const Workspace: React.FC = () => {
   const [userCode, setUserCode] = useState<string>("");
@@ -117,7 +107,7 @@ const Workspace: React.FC = () => {
         </div>
       ) : (
         <>
-          <Navbar onRun={handleCompile} onSubmit={handleCompile} enableSubmit={enableSubmit} />
+          <Navbar onRun={handleCompile} onSubmit={handleCompile} enableSubmit={enableSubmit} testResults={testResults}/>
 
           <div className="flex flex-grow flex-col lg:flex-row">
             <Split
