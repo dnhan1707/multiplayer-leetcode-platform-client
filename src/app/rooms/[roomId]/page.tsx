@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
 import Chat from "@/app/components/Chat";
 import { useUser } from "@/app/context/UserContext";
@@ -9,15 +9,31 @@ import GameStarted from "@/app/components/GameStarted";
 import Participants from "@/app/components/Participants";
 import "../../styles/workspace.css"
 import { useEffect } from "react";
+import CreateSocket from "../../socket/socket"
+import { SocketService } from '../../socket/soketServices';
+
 
 const ChatPage = () => {
-  const { roomCode, gameStarted } = useUser();
-  const router = useRouter();
+  const { roomCode, gameStarted, setGameStarted, setSelectedProblem } = useUser();
+  // const router = useRouter();
   const { loading, authenticated } = useAuth();
+  const socket = CreateSocket();
+  const socketService = new SocketService(socket);
+    useEffect(() => {
+      socketService.joinRoom(roomCode);
 
-  useEffect(() => {
-    console.log("in dashboard gamestarte= ", gameStarted);
-  }, [])
+      socket.on("announceGameStartedReceived", ({ roomCode, selectedProblem }) => {
+          console.log("Received game start announcement:", selectedProblem); // Debug log
+          setSelectedProblem(selectedProblem);
+          setGameStarted(true);
+          // gameStarted = true;
+      });
+
+      return () => {
+          socket.off("announceGameStartedReceived");
+      };
+    }, [socket, setGameStarted, setSelectedProblem]);
+
 
   if (loading) {
     return (

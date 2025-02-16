@@ -10,10 +10,11 @@ type NavProps = {
     onRun: () => void;
     onSubmit : () => void;
     enableSubmit: boolean; // Add this prop
-    testResults: CompilerResult | null;
+    // testResults: CompilerResult | null;
+    participantsProgress: Map<string, CompilerResult>;
 };
 
-const Navbar: React.FC<NavProps> = ({ onRun, onSubmit, enableSubmit, testResults }) => {
+const Navbar: React.FC<NavProps> = ({ onRun, onSubmit, enableSubmit, participantsProgress}) => {
     const router = useRouter();
     const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
     
@@ -80,7 +81,8 @@ const Navbar: React.FC<NavProps> = ({ onRun, onSubmit, enableSubmit, testResults
             <LeaderboardModal
                 isOpen={isLeaderboardOpen}
                 onClose={() => setIsLeaderboardOpen(false)}
-                testResults={testResults}
+                // testResults={testResults}
+                participantsProgress={participantsProgress}
             />
         </>
     )

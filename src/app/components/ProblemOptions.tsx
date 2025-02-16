@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useUser } from "../context/UserContext";
+import CreateSocket from '../socket/socket';
+import { SocketService } from '../socket/soketServices';
 
 export default function ProblemOptions() {
     const problems = [
@@ -14,8 +16,16 @@ export default function ProblemOptions() {
       ];
       
       const [selectedOption, setSelectedOption] = useState("");
-      const { setGameStarted, setSelectedProblem } = useUser();
-    
+      const { setGameStarted, setSelectedProblem, roomCode } = useUser();
+      const socket = CreateSocket();
+      const socketService = new SocketService(socket);
+
+      const handleStartGame = () => {
+        console.log("Starting game with problem:", selectedOption); // Debug log
+        socketService.announceGameStarted(roomCode, selectedOption);
+        setGameStarted(true);
+    };
+
       const handleRadioChange = (option: string) => {
         setSelectedOption(option);
         setSelectedProblem(option);
@@ -54,7 +64,7 @@ export default function ProblemOptions() {
           </div>
     
           <button
-            onClick={() => setGameStarted(true)}
+            onClick={handleStartGame}
             disabled={!selectedOption}
             className={`
               w-full py-3 rounded-lg text-white font-medium transition-all duration-200

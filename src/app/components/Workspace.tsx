@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+'use client'
+
+import React, { useState, useEffect } from 'react';
 import Split from 'react-split';
 import ProblemDescription from './ProblemDescription';
 import LandingEditor from './LandingEditor';
@@ -7,6 +9,8 @@ import { languageOptions } from '../constants/languageOptions';
 import { useUser } from '../context/UserContext';
 import Testcases from './Testcases';
 import { CompilerResult } from '../types/types';
+import CreateSocket from '../socket/socket';
+import { SocketService } from '../socket/soketServices';
 
 const Workspace: React.FC = () => {
   const [userCode, setUserCode] = useState<string>("");
@@ -16,9 +20,24 @@ const Workspace: React.FC = () => {
   const [compilerResult, setCompilerResult] = useState<CompilerResult | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [testResults, setTestResults] = useState<CompilerResult | null>(null);
-  const { problemId, setSubmittedCode, getSubmittedCode } = useUser();
+  const { problemId, setSubmittedCode, getSubmittedCode, roomCode, userName } = useUser();
   const [lastSubmitTime, setLastSubmitTime] = useState<number>(0);
+  const socket = CreateSocket();
+  const socketService = new SocketService(socket);
+  const [participantsProgress, setParticipantsProgress] = useState<Map<string, CompilerResult>>(new Map());
 
+  useEffect(() => {
+    socketService.joinRoom(roomCode);
+
+    // Listen for progress updates from other participants
+    socket.on("progress_update_recieved", ({ roomCode, progress, username }) => {
+      setParticipantsProgress(prev => new Map(prev).set(username, progress));
+    });
+
+    return () => {
+      socket.off("progress_update");
+    };
+  }, [socket]);
   // Callback to handle updates from child
   const handleUserCodeChange = (codeToSubmit: string) => {
     setUserCode(codeToSubmit);
@@ -82,6 +101,10 @@ const Workspace: React.FC = () => {
       const result: CompilerResult = await response.json();
       setCompilerResult(result);
       setTestResults(result);
+
+      socketService.updateProgress(roomCode, result, userName);
+      setParticipantsProgress(prev => new Map(prev).set(userName, result));
+
     } catch (error) {
       console.error('Submission error:', error);
     } finally {
@@ -107,8 +130,13 @@ const Workspace: React.FC = () => {
         </div>
       ) : (
         <>
-          <Navbar onRun={handleCompile} onSubmit={handleCompile} enableSubmit={enableSubmit} testResults={testResults}/>
-
+          <Navbar 
+            onRun={handleCompile} 
+            onSubmit={handleCompile} 
+            enableSubmit={enableSubmit} 
+            // testResults={testResults}
+            participantsProgress={participantsProgress}
+          />
           <div className="flex flex-grow flex-col lg:flex-row">
             <Split
               className="flex flex-grow"
