@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { setItem, getItem } from "@/app/utils/localStorage";
-import { get } from 'http';
 
 interface UserContextProps {
 
@@ -39,6 +38,9 @@ interface UserContextProps {
 
     userName: string;
     setUserName: (name: string) => void;
+
+    numberOfSubmission: number;
+    setNumberOfSubmission: (count: number) => void;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
@@ -53,6 +55,7 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
     const [languageId, setLanguageIdState] = useState<number>(63);
     const [submittedCode, setSubmittedCodeState] = useState<string>("");
     const [userName, setUserNameState] = useState<string>("");
+    const [numberOfSubmission, setNumberOfSubmissionState] = useState<number>(0);
 
     useEffect(() => {
         const storeUserName = getItem("userName");
@@ -98,6 +101,11 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
         const storedSelectedProblem = getItem("selectedProblem");
         if (storedSelectedProblem) {
             setSelectedProblemState(storedSelectedProblem);
+        }
+
+        const storeNumberOfSubmission = getItem("numberOfSubmission");
+        if(storeNumberOfSubmission) {
+            setNumberOfSubmissionState(storeNumberOfSubmission);
         }
     }, []);
 
@@ -166,6 +174,11 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
         return sessionStorage.getItem("refreshToken") || "";
     }
 
+    const setNumberOfSubmission = (count: number) => {
+        setNumberOfSubmissionState(count);
+        setItem('numberOfSubmission', count);
+    }
+
     return (
         <UserContext.Provider 
         value={{
@@ -179,7 +192,8 @@ export const UserProvider = ({ children } : { children: ReactNode }) => {
                 submittedCode, setSubmittedCode,
                 setJwtToken, getJwtToken,
                 setJwtRefreshToken, getJwtRefreshToken,
-                userName, setUserName
+                userName, setUserName,
+                numberOfSubmission, setNumberOfSubmission
             }}>
             {children}
         </UserContext.Provider>

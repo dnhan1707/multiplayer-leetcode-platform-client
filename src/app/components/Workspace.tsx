@@ -11,20 +11,74 @@ import Testcases from './Testcases';
 import { CompilerResult } from '../types/types';
 import CreateSocket from '../socket/socket';
 import { SocketService } from '../socket/soketServices';
+import { useGameStateManager } from '../utils/gameStateManager';
+import { useRouter } from "next/navigation";
+
 
 const Workspace: React.FC = () => {
   const [userCode, setUserCode] = useState<string>("");
-  const [enableSubmit, setEnableSubmit] = useState<boolean>(true);
-  const [lang, setLang] = useState<number>(63);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("javascript");
-  const [compilerResult, setCompilerResult] = useState<CompilerResult | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [testResults, setTestResults] = useState<CompilerResult | null>(null);
-  const { problemId, setSubmittedCode, getSubmittedCode, roomCode, userName } = useUser();
+
+  const [lang, setLang] = useState<number>(63);
   const [lastSubmitTime, setLastSubmitTime] = useState<number>(0);
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [enableSubmit, setEnableSubmit] = useState<boolean>(true);
+
+  const [testResults, setTestResults] = useState<CompilerResult | null>(null);
+  const [compilerResult, setCompilerResult] = useState<CompilerResult | null>(null);
+  const [participantsProgress, setParticipantsProgress] = useState<Map<string, CompilerResult>>(new Map());
+
+  const { problemId, roomCode, userName, numberOfSubmission, setSubmittedCode, getSubmittedCode, setNumberOfSubmission } = useUser();
+  const { removeLocalstorageForLosing } = useGameStateManager();
+
   const socket = CreateSocket();
   const socketService = new SocketService(socket);
-  const [participantsProgress, setParticipantsProgress] = useState<Map<string, CompilerResult>>(new Map());
+  const router = useRouter();
+
+  useEffect(() => {
+    if(numberOfSubmission == 3) {
+      removeLocalstorageForLosing();
+      router.push(`/rooms/${roomCode}`);
+      console.log("U lost");
+    }
+  }, [numberOfSubmission])
+
+  useEffect(() => {
+    socketService.joinRoom(roomCode);
+
+    socket.on("game_lost_announcement", ({ username }) => {
+      if (username !== userName) {
+        // Show winning notification
+        console.log(`${username} lost!`);
+        removeLocalstorageForLosing();
+        router.push(`/rooms/${roomCode}`);
+        // Optionally show a victory modal or notification
+      }
+    });
+  
+    return () => {
+      socket.off("game_lost_announcement");
+    };
+  }, [socket, userName]);
+
+  useEffect(() => {
+    socketService.joinRoom(roomCode);
+
+    socket.on("game_winner_announcement", ({ winner }) => {
+      if (winner === userName) {
+        console.log("Congratulations! You won!");
+      } else {
+        console.log(`${winner} won the game!`);
+      }
+      removeLocalstorageForLosing();
+      router.push(`/rooms/${roomCode}`);
+    });
+  
+    return () => {
+      socket.off("game_winner_announcement");
+    };
+  }, [socket, userName]);
 
   useEffect(() => {
     socketService.joinRoom(roomCode);
@@ -52,7 +106,7 @@ const Workspace: React.FC = () => {
       setEnableSubmit(false);
       return;
     }
-
+    
     setLastSubmitTime(now);
     setLoading(true);
     setEnableSubmit(false); // Disable buttons
@@ -102,6 +156,17 @@ const Workspace: React.FC = () => {
       setCompilerResult(result);
       setTestResults(result);
 
+      if (result.success) {
+        // If all test cases pass, announce winner
+        socketService.announceWinner(roomCode, userName);
+        console.log("You won - all test cases passed!");
+        removeLocalstorageForLosing();
+        router.push(`/rooms/${roomCode}`);
+      } else {
+        // If failed, increment submission count
+        setNumberOfSubmission(numberOfSubmission + 1);
+      }
+
       socketService.updateProgress(roomCode, result, userName);
       setParticipantsProgress(prev => new Map(prev).set(userName, result));
 
@@ -131,7 +196,6 @@ const Workspace: React.FC = () => {
       ) : (
         <>
           <Navbar 
-            onRun={handleCompile} 
             onSubmit={handleCompile} 
             enableSubmit={enableSubmit} 
             // testResults={testResults}

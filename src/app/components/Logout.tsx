@@ -5,7 +5,7 @@ import { useUser } from "../context/UserContext";
 import { clearAuthToken } from "../utils/cookiesManager";
 
 export default function Logout() {
-    const router = useRouter();
+  const router = useRouter();
   const { 
     setRoomCode, 
     setGameStarted, 

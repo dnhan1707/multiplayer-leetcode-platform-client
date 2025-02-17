@@ -3,29 +3,22 @@ import { useState } from 'react';
 import { useRouter } from "next/navigation";
 import LeaderboardModal from './LeaderboardModalProp';
 import { CompilerResult } from '../types/types';
-
+import { useUser } from '../context/UserContext';
 
 
 type NavProps = {
-    onRun: () => void;
     onSubmit : () => void;
     enableSubmit: boolean; // Add this prop
     // testResults: CompilerResult | null;
     participantsProgress: Map<string, CompilerResult>;
 };
 
-const Navbar: React.FC<NavProps> = ({ onRun, onSubmit, enableSubmit, participantsProgress}) => {
+const Navbar: React.FC<NavProps> = ({ onSubmit, enableSubmit, participantsProgress}) => {
     const router = useRouter();
     const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
+    const [limitSubmission, setLimitSubmission] = useState(3);
+    const { numberOfSubmission } = useUser();
     
-    
-    const handleLogin = () => {
-        router.push('/login')
-    }
-
-    const handleSignUp = () => {
-    router.push('/signup')
-    }
 
     const handleOpenLeaderBoard = () => {
         setIsLeaderboardOpen(true);
@@ -58,17 +51,10 @@ const Navbar: React.FC<NavProps> = ({ onRun, onSubmit, enableSubmit, participant
                 <div className='flex gap-x-4 justify-center flex-1'>
                     <button 
                         className="text-gray-400 border rounded-md border-white px-4 py-2 hover:text-white" 
-                        onClick={onRun} 
-                        disabled={!enableSubmit} // Disable button based on prop
-                    >
-                        Run
-                    </button>
-                    <button 
-                        className="text-gray-400 border rounded-md border-white px-4 py-2 hover:text-white" 
                         onClick={onSubmit} 
                         disabled={!enableSubmit} // Disable button based on prop
                     >
-                        Submit
+                        Submit {numberOfSubmission}/{limitSubmission}
                     </button>
                 </div>
 

@@ -32,4 +32,18 @@ export class SocketService {
             selectedProblem
         });
     }
+
+    announceGameLost(roomCode: string, username: string) {
+        this.socket.emit("game_lost", {
+          roomCode,
+          username
+        });
+    }
+
+    announceWinner(roomCode: string, username: string) {
+        this.socket.emit("game_winner", {
+          roomCode,
+          username
+        });
+    }
 }
