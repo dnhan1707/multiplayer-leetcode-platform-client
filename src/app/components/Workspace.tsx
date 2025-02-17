@@ -21,6 +21,7 @@ const Workspace: React.FC = () => {
 
   const [lang, setLang] = useState<number>(63);
   const [lastSubmitTime, setLastSubmitTime] = useState<number>(0);
+  const [roomParticipants, setRoomParticipants] = useState<number>(0);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [enableSubmit, setEnableSubmit] = useState<boolean>(true);
@@ -37,30 +38,69 @@ const Workspace: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if(numberOfSubmission == 3) {
-      removeLocalstorageForLosing();
-      router.push(`/rooms/${roomCode}`);
-      console.log("U lost");
+    const fetchParticipants = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/roomParticipant/usernameWithRole/${roomCode}`,
+          {
+            credentials: "include",
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch participants");
+        }
+        const result = await response.json();
+        setRoomParticipants(result.data.length);
+      } catch (error) {
+        console.error('Error fetching participants:', error);
+      }
+    };
+
+    fetchParticipants();
+
+    // Listen for participant changes
+    socket.on("participantJoined", fetchParticipants);
+    socket.on("participantLeft", fetchParticipants);
+
+    return () => {
+      socket.off("participantJoined");
+      socket.off("participantLeft");
+    };
+  }, [roomCode]);
+
+  useEffect(() => {
+    if(numberOfSubmission >= 3) {
+      if (roomParticipants === 2) {
+        // Only announce loss and redirect everyone if there are 2 participants
+        socketService.announceGameLost(roomCode, userName);
+        removeLocalstorageForLosing();
+        router.push(`/rooms/${roomCode}`);
+        console.log("You lost - game ended");
+      } else {
+        // Just show a message if there aren't exactly 2 participants
+        console.log("You lost - waiting for more participants to join");
+        setEnableSubmit(false);
+      }
     }
-  }, [numberOfSubmission])
+  }, [numberOfSubmission, roomParticipants]);
 
   useEffect(() => {
     socketService.joinRoom(roomCode);
 
     socket.on("game_lost_announcement", ({ username }) => {
-      if (username !== userName) {
-        // Show winning notification
-        console.log(`${username} lost!`);
+      if (roomParticipants === 2) {
+        if (username !== userName) {
+          console.log(`${username} lost! You win!`);
+        }
         removeLocalstorageForLosing();
         router.push(`/rooms/${roomCode}`);
-        // Optionally show a victory modal or notification
       }
     });
   
     return () => {
       socket.off("game_lost_announcement");
     };
-  }, [socket, userName]);
+  }, [socket, userName, roomParticipants]);
 
   useEffect(() => {
     socketService.joinRoom(roomCode);
