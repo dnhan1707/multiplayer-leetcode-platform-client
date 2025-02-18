@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { useUser } from "../context/UserContext";
 import { useRouter } from "next/navigation";
+import RoomFullModal from "../components/RoomFullModal";
 
 export default function JoinRoom() {
   const [roomId, setRoomId] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isRoomFull, setIsRoomFull] = useState(false);
 
   const { setRoomCode } = useUser();
   const router = useRouter();
@@ -45,6 +47,10 @@ export default function JoinRoom() {
         throw new Error("Invalid room code received from the server");
       }
       const dataResponse = await response.json();
+      if (dataResponse.isFull) {
+        setIsRoomFull(true);
+        return;
+      }
       console.log(dataResponse);
       setRoomCode(roomId);
       router.push(`/rooms/${roomId}`);
@@ -66,6 +72,8 @@ export default function JoinRoom() {
         />
         <button type="submit">Join</button>
       </form>
+
+      {isRoomFull && <RoomFullModal />}
     </div>
   );
 }
