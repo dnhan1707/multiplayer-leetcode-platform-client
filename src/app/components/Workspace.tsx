@@ -13,6 +13,7 @@ import CreateSocket from '../socket/socket';
 import { SocketService } from '../socket/soketServices';
 import { useGameStateManager } from '../utils/gameStateManager';
 import { useRouter } from "next/navigation";
+import LeaveRoomButton from './LeaveRoomButton';
 
 
 const Workspace: React.FC = () => {
@@ -129,7 +130,7 @@ const Workspace: React.FC = () => {
     });
 
     return () => {
-      socket.off("progress_update");
+      socket.off("progress_update_recieved"); // Match the event name
     };
   }, [socket]);
   // Callback to handle updates from child
@@ -153,8 +154,13 @@ const Workspace: React.FC = () => {
 
     setTimeout(() => {
       setLastSubmitTime(0); // Re-enable after 16 seconds
-      setEnableSubmit(true);
-      console.log("Ready to submit again");
+      if(numberOfSubmission < 3){
+        setEnableSubmit(true);
+        console.log("Ready to submit again");
+      } else {
+        setEnableSubmit(false);
+        console.log("Ready to submit again but U Lost");
+      }
     }, 16000);
 
     const submittedCode = getSubmittedCode();
@@ -206,7 +212,11 @@ const Workspace: React.FC = () => {
         // If failed, increment submission count
         setNumberOfSubmission(numberOfSubmission + 1);
       }
-
+      setParticipantsProgress(prev => {
+        const newMap = new Map(prev);
+        newMap.set(userName, result);
+        return newMap;
+      });
       socketService.updateProgress(roomCode, result, userName);
       setParticipantsProgress(prev => new Map(prev).set(userName, result));
 
@@ -214,7 +224,13 @@ const Workspace: React.FC = () => {
       console.error('Submission error:', error);
     } finally {
       setLoading(false);
-      setEnableSubmit(true); // Enable buttons again
+      if(numberOfSubmission < 3){
+        setEnableSubmit(true);
+        console.log("Ready to submit again");
+      } else {
+        setEnableSubmit(false);
+        console.log("Ready to submit again but U Lost");
+      }    
     }
   };
 
@@ -235,6 +251,7 @@ const Workspace: React.FC = () => {
         </div>
       ) : (
         <>
+          <LeaveRoomButton variant='workspace'></LeaveRoomButton>
           <Navbar 
             onSubmit={handleCompile} 
             enableSubmit={enableSubmit} 

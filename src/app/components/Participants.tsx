@@ -92,6 +92,9 @@ const Participants: React.FC<ParticipantsProps> = ({ roomCode }) => {
           </svg>
           Players ({participants.length})
         </h2>
+        <h2 className="text-sm font-semibold flex items-center gap-1">
+          Room Code: {roomCode}
+        </h2>
       </div>
       
       <div className="overflow-y-auto max-h-[60vh] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">

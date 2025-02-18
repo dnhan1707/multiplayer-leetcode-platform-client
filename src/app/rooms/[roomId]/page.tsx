@@ -11,6 +11,7 @@ import "../../styles/workspace.css"
 import { useEffect } from "react";
 import CreateSocket from "../../socket/socket"
 import { SocketService } from '../../socket/soketServices';
+import LeaveRoomButton from "@/app/components/LeaveRoomButton";
 
 
 const ChatPage = () => {
@@ -59,6 +60,7 @@ const ChatPage = () => {
             <Participants roomCode={roomCode} />
             <Chat roomCode={roomCode} />
           </div>
+          <LeaveRoomButton variant="room"></LeaveRoomButton>
         </div>
       )}
     </div>
